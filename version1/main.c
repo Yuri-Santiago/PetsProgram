@@ -48,6 +48,7 @@ void showAllPetsInOrder();
 int searchEmptyPet();
 int searchPetByCode(int *index, int *petCode, int *personCode);
 void insertPetInfos(int index, int personCode, char type[], char name[], char birth[]);
+void updatePetInfos(int index, int petCode, int personCode, char type[], char name[], char birth[]);
 int getPetCode(int personCode);
 void choosePetType(char type[]);
 int verifyPetName(char name[], int personCode);
@@ -73,7 +74,10 @@ int main() {
     while(1) {
         showMenu();
         printf("Digite a opcao desejada: ");
-        c = getch();
+
+        do {
+            c = getc(stdin);
+        } while(c == '\n');
 
         switch(c) {
             case '1':
@@ -207,7 +211,7 @@ void showPersonsByPetType()
     char c;
     while(1) {
         showPetTypeMenu();
-        c = getch();
+        c = getc(stdin);
 
         switch(c) {
             case '1':
@@ -599,7 +603,7 @@ void choosePetType(char type[])
     char c;
     while(1) {
         showPetTypeMenu();
-        c = getch();
+        c = getc(stdin);
 
         switch(c) {
             case '1':
