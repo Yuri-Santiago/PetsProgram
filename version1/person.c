@@ -9,55 +9,69 @@
 
 void insertPerson()
 {
-    char name[255], cpf[15], birth[11];
     int index = searchEmptyPerson();
-
     if(index == -1) {
         printf("Nao ha espaços para inserir uma pessoa!\n");
         return;
     }
 
+    char *name = (char *) malloc(nameMax * sizeof(char));
     printf("Insira o seu nome: ");
-    scanf("%s", name);
+    readString(name, nameMax);
+    name[strlen(name)-1] = '\0';
 
+    char *cpf = (char *) malloc(cpfMax * sizeof(char));
     do {
         printf("Insira o seu cpf <000.000.000-00>: ");
-        scanf("%s", cpf);
+        readString(cpf, cpfMax);
     } while(verifyCPF(cpf));
 
+    char *birth = (char *) malloc(birthMax * sizeof(char));
     do {
         printf("Insira a sua data de nascimento <dd/mm/aaaa>: ");
-        scanf("%s", birth);
+        readString(birth, birthMax);
     } while(verifyBirth(birth));
 
     insertPersonInfos(index, name, cpf, birth);
+
+    free(name);
+    free(cpf);
+    free(birth);
+
     printf("Pessoa inserida com sucesso!\n");
 }
 
 void updatePerson()
 {
-    char name[255], cpf[15], birth[11];
     int index = searchPersonByCode();
-
     if(index == -1) {
         printf("Pessoa nao encontrada!\n");
         return;
     }
 
+    char *name = (char *) malloc(nameMax * sizeof(char));
     printf("Insira o novo nome: ");
-    scanf("%s", name);
+    readString(name, nameMax);
+    name[strlen(name)-1] = '\0';
 
+    char *cpf = (char *) malloc(cpfMax * sizeof(char));
     do {
         printf("Insira o novo cpf <000.000.000-00>: ");
-        scanf("%s", cpf);
+        readString(cpf, cpfMax);
     } while(verifyCPF(cpf));
 
+    char *birth = (char *) malloc(birthMax * sizeof(char));
     do {
         printf("Insira a nova data de nascimento <dd/mm/aaaa>: ");
-        scanf("%s", birth);
+        readString(birth, birthMax);
     } while(verifyBirth(birth));
 
     insertPersonInfos(index, name, cpf, birth);
+
+    free(name);
+    free(cpf);
+    free(birth);
+
     printf("Pessoa atualizada com sucesso!\n");
 }
 
@@ -70,7 +84,7 @@ void deletePerson()
         return;
     }
 
-    insertPersonInfos(index, "", "", "");
+    deletePersonInfos(index);
     printf("Pessoa deletada com sucesso!\n");
 }
 
@@ -88,10 +102,10 @@ void showPersonByCode()
 
 void showPersonsByPetType()
 {
-    char c;
     while(1) {
         showPetTypeMenu();
-        c = (char) getc(stdin);
+        fflush(stdin);
+        char c = (char) getc(stdin);
 
         switch(c) {
             case '1':
@@ -117,36 +131,37 @@ void showAllPersons()
     printf("\nListar Todas as Pessoas\n");
 
     for(int i = 0; i < size; ++i) {
-        if(strcmp(personNames[i], "") != 0)
+        if(personNames[i])
             showPerson(i);
     }
 }
 
 void showAllPersonsInOrder()
 {
-    const char maxString[2] = "z";
-    char smaller[255], names[size][255];
-    int currentIndex = 0, indexes[size];
-    int max, smallerIndex;
-
     printf("\nListar Todas as Pessoas em Ordem Alfabetica\n");
 
+    // copy every name to another array
+    int currentIndex = 0;
+    int indexes[size];
+    char *names[size];
     for(int i = 0; i < size; ++i) {
-        if(strcmp(personNames[i], "") != 0) {
+        if(personNames[i]) {
+            names[currentIndex] = allocateString(personNames[i]);
             strcpy(names[currentIndex], personNames[i]);
             indexes[currentIndex] = i;
             currentIndex++;
         }
     }
 
-    max = currentIndex;
-    for(int i = 0; i < max; ++i) {
+    // transform every name to upper
+    int max = currentIndex;
+    for(int i = 0; i < max; ++i)
         strToUpper(names[i]);
-    }
 
+    char smaller[nameMax];
     while(currentIndex--) {
-        strcpy(smaller, maxString);
-        smallerIndex = 0;
+        strcpy(smaller, "z");
+        int smallerIndex = 0;
 
         for(int i = 0; i < max; ++i) {
             if(strcmp(names[i], smaller) < 0) {
@@ -155,15 +170,18 @@ void showAllPersonsInOrder()
             }
         }
 
-        strcpy(names[smallerIndex], maxString);
+        strcpy(names[smallerIndex], "z");
         showPerson(indexes[smallerIndex]);
     }
+
+    for(int i = 0; i < max; ++i)
+        free(names[i]);
 }
 
 int searchEmptyPerson()
 {
     for(int i = 0; i < size; ++i) {
-        if(strcmp(personNames[i], "") == 0)
+        if(!personNames[i])
             return i;
     }
 
@@ -173,29 +191,41 @@ int searchEmptyPerson()
 int searchPersonByCode()
 {
     char code[4];
-    long index;
-
     do {
         printf("\nInsira o codigo da pessoa <000>: ");
         scanf("%s", code);
     } while(strlen(code) != 3);
 
-    index = strtol(code, NULL, 10) - 1;
+    long index = strtol(code, NULL, 10) - 1;
 
-    if(strcmp(personNames[index], "") != 0)
+    if(personNames[index])
         return index;
     return -1;
 }
 
-void insertPersonInfos(int index, char name[], char cpf[], char birth[])
+void insertPersonInfos(int index, char *name, char *cpf, char *birth)
 {
     personCodes[index] = index + 1;
+
+    personNames[index] = allocateString(name);
     strcpy(personNames[index], name);
+
+    personCPFs[index] = allocateString(cpf);
     strcpy(personCPFs[index], cpf);
+
+    personBirths[index] = allocateString(birth);
     strcpy(personBirths[index], birth);
 }
 
-int verifyCPF(char cpf[])
+void deletePersonInfos(int index)
+{
+    personCodes[index] = -1;
+    personNames[index] = NULL;
+    personCPFs[index] = NULL;
+    personBirths[index] = NULL;
+}
+
+int verifyCPF(char *cpf)
 {
     if(strlen(cpf) != 14) {
         printf("Tamanho de CPF invalido, verifique o exemplo entre \"<>\".\n");
@@ -206,18 +236,18 @@ int verifyCPF(char cpf[])
         if(i == 3 || i == 7 || i == 11)
             continue;
         if(!isdigit(cpf[i])) {
-            printf("Padrão de CPF invalido, verifique o exemplo entre \"<>\".\n");
+            printf("Padrao de CPF invalido, verifique o exemplo entre \"<>\".\n");
             return 1;
         }
     }
 
     if(cpf[3] != '.' || cpf[7] != '.' || cpf[11] != '-') {
-        printf("Padrão de CPF invalido, verifique o exemplo entre \"<>\".\n");
+        printf("Padrao de CPF invalido, verifique o exemplo entre \"<>\".\n");
         return 1;
     }
 
     for(int i = 0; i < size; ++i) {
-        if(strcmp(personCPFs[i], cpf) == 0) {
+        if(personCPFs[i] && strcmp(personCPFs[i], cpf) == 0) {
             printf("CPF ja existente no banco de dados!\n");
             return 1;
         }
@@ -233,12 +263,10 @@ void showPerson(int index)
            personCodes[index], personNames[index], personCPFs[index], personBirths[index]);
 }
 
-void showPersonPetType(char type[])
+void showPersonPetType(char *type)
 {
     for(int i = 0; i < petSize; ++i) {
-        if(petPersonCodes[i] == -1)
-            continue;
-        if(strcmp(petTypes[i], type) == 0)
+        if(petPersonCodes[i] != -1 && strcmp(petTypes[i], type) == 0)
             showPerson(petPersonCodes[i] - 1);
     }
 }

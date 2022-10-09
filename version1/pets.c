@@ -8,57 +8,63 @@
 
 void insertPet()
 {
-    char type[20], name[255], birth[11];
-    int personIndex;
     int index = searchEmptyPet();
-
     if(index == -1) {
         printf("\nNao ha espaços para inserir uma novo pet!\n");
         return;
     }
 
-    personIndex = searchPersonByCode();
+    int personIndex = searchPersonByCode();
     if(personIndex == -1) {
         printf("\nPessoa nao encontrada!\n");
         return;
     }
 
+    char *name = (char *) malloc(nameMax * sizeof(char));
     do {
         printf("Insira o nome do pet: ");
-        scanf("%s", name);
+        readString(name, nameMax);
+        name[strlen(name)-1] = '\0';
     } while(verifyPetName(name, personIndex + 1));
 
-    choosePetType(type);
+    char *type = choosePetType();
 
+    char *birth = (char *) malloc(birthMax * sizeof(char));
     do {
         printf("\nInsira a data de nascimento do pet<dd/mm/aaaa>: ");
-        scanf("%s", birth);
+        readString(birth, birthMax);
     } while(verifyBirth(birth));
 
     insertPetInfos(index, personIndex + 1, type, name, birth);
+
+    free(name);
+    free(type);
+    free(birth);
+
     printf("\nPet inserido com sucesso!\n");
 }
 
 void updatePet()
 {
-    char type[20], name[255], birth[11];
     int index, petCode, personCode;
-
     if(!searchPetByCode(&index, &petCode, &personCode)) {
         printf("Pet nao encontrado!");
         return;
     }
 
+    char *name = (char *) malloc(nameMax * sizeof(char));
     do {
-        printf("Insira o nome do pet: ");
-        scanf("%s", name);
+        printf("Insira o nome do pet: "); // TODO: mesmo nome de pet na hora de atualizar não atualiza...
+        readString(name, nameMax);
+        name[strlen(name)-1] = '\0';
     } while(verifyPetName(name, personCode));
 
-    choosePetType(type);
+    char *type = choosePetType();
 
+    char *birth = (char *) malloc(birthMax * sizeof(char));
     do {
         printf("\nInsira a nova data de nascimento do pet<dd/mm/aaaa>: ");
-        scanf("%s", birth);
+        readString(birth, birthMax);
     } while(verifyBirth(birth));
 
     updatePetInfos(index, petCode, personCode, type, name, birth);
@@ -68,20 +74,18 @@ void updatePet()
 void deletePet()
 {
     int index, petCode, personCode;
-
     if(!searchPetByCode(&index, &petCode, &personCode)) {
         printf("Pet nao encontrado!");
         return;
     }
 
-    updatePetInfos(index, -1, -1, "", "", "");
+    deletePetInfos(index);
     printf("Pessoa deletada com sucesso!\n");
 }
 
 void showPetByCode()
 {
     int index, petCode, personCode;
-
     if(!searchPetByCode(&index, &petCode, &personCode)) {
         printf("Pet nao encontrado!");
         return;
@@ -93,7 +97,6 @@ void showPetByCode()
 void showPetByPersonCode()
 {
     int index = searchPersonByCode();
-
     if(index == -1) {
         printf("Pessoa nao encontrada!\n");
         return;
@@ -108,30 +111,30 @@ void showPetByPersonCode()
 
 void showAllPetsInOrder()
 {
-
-    const char maxString[2] = "z";
-    char smaller[255], names[petSize][255];
-    int currentIndex = 0, indexes[petSize];
-    int max, smallerIndex;
-
     printf("\nListar Todos os Pets em Ordem Alfabetica\n");
 
+    // copy every name to another array
+    int currentIndex = 0;
+    int indexes[petSize];
+    char *names[petSize];
     for(int i = 0; i < petSize; ++i) {
         if(petPersonCodes[i] != -1) {
+            names[currentIndex] = allocateString(petNames[i]);
             strcpy(names[currentIndex], petNames[i]);
             indexes[currentIndex] = i;
             currentIndex++;
         }
     }
 
-    max = currentIndex;
-    for(int i = 0; i < max; ++i) {
+    // transform every name to upper
+    int max = currentIndex;
+    for(int i = 0; i < max; ++i)
         strToUpper(names[i]);
-    }
 
+    char smaller[nameMax];
     while(currentIndex--) {
-        strcpy(smaller, maxString);
-        smallerIndex = 0;
+        strcpy(smaller, "z");
+        int smallerIndex = 0;
 
         for(int i = 0; i < max; ++i) {
             if(strcmp(names[i], smaller) < 0) {
@@ -140,9 +143,12 @@ void showAllPetsInOrder()
             }
         }
 
-        strcpy(names[smallerIndex], maxString);
+        strcpy(names[smallerIndex], "z");
         showPet(indexes[smallerIndex]);
     }
+
+    for(int i = 0; i < max; ++i)
+        free(names[i]);
 }
 
 int searchEmptyPet()
@@ -157,21 +163,22 @@ int searchEmptyPet()
 
 int searchPetByCode(int *index, int *petCode, int *personCode)
 {
-    char code[7], person[4], pet[4];
-    long petNumber, personNumber;
-
+    char code[7];
     do {
         printf("\nInsira o codigo do pet <000000>: ");
         scanf("%s", code);
     } while(strlen(code) != 6);
 
+    char person[4];
     for(int i = 0; i < 3; i++)
         person[i] = code[i];
     person[3] = '\0';
+
+    char pet[4];
     strcpy(pet, &code[3]);
 
-    petNumber = strtol(pet, NULL, 10);
-    personNumber = strtol(person, NULL, 10);
+    long petNumber = strtol(pet, NULL, 10);
+    long personNumber = strtol(person, NULL, 10);
 
     for(int i = 0; i < petSize; ++i) {
         if(petPersonCodes[i] == personNumber && petCodes[i] == petNumber) {
@@ -185,22 +192,43 @@ int searchPetByCode(int *index, int *petCode, int *personCode)
     return 0;
 }
 
-void insertPetInfos(int index, int personCode, char type[], char name[], char birth[])
+void insertPetInfos(int index, int personCode, char *type, char *name, char *birth)
 {
     petCodes[index] = getPetCode(personCode);
     petPersonCodes[index] = personCode;
+
+    petTypes[index] = allocateString(type);
     strcpy(petTypes[index], type);
+
+    petNames[index] = allocateString(name);
     strcpy(petNames[index], name);
+
+    petBirths[index] = allocateString(birth);
     strcpy(petBirths[index], birth);
 }
 
-void updatePetInfos(int index, int petCode, int personCode, char type[], char name[], char birth[])
+void updatePetInfos(int index, int petCode, int personCode, char *type, char *name, char *birth)
 {
     petCodes[index] = petCode;
     petPersonCodes[index] = personCode;
+
+    petTypes[index] = allocateString(type);
     strcpy(petTypes[index], type);
+
+    petNames[index] = allocateString(name);
     strcpy(petNames[index], name);
+
+    petBirths[index] = allocateString(birth);
     strcpy(petBirths[index], birth);
+}
+
+void deletePetInfos(int index)
+{
+    petCodes[index] = -1;
+    petPersonCodes[index] = -1;
+    petTypes[index] = NULL;
+    petNames[index] = NULL;
+    petBirths[index] = NULL;
 }
 
 int getPetCode(int personCode)
@@ -211,6 +239,7 @@ int getPetCode(int personCode)
         if(petPersonCodes[i] == -1)
             continue;
 
+        // get the max current petCode
         if(petPersonCodes[i] == personCode && petCodes[i] > code)
             code = petCodes[i];
     }
@@ -218,37 +247,36 @@ int getPetCode(int personCode)
     return code + 1;
 }
 
-void choosePetType(char type[])
+char *choosePetType()
 {
-    char c;
     while(1) {
         showPetTypeMenu();
-        c = (char) getc(stdin);
+        fflush(stdin);
+        char c = (char) getc(stdin);
 
+        char *type = (char *) malloc(petTypeMax * sizeof(char));
         switch(c) {
             case '1':
                 strcpy(type, "Cachorro");
-                return;
+                return type;
             case '2':
                 strcpy(type, "Gato");
-                return;
+                return type;
             case '3':
                 strcpy(type, "Cobra");
-                return;
+                return type;
             case '4':
                 strcpy(type, "Passarinho");
-                return;
+                return type;
             default:
                 printf("Opcao invalida...\n");
         }
     }
 }
 
-int verifyPetName(char name[], int personCode)
+int verifyPetName(char *name, int personCode)
 {
-    char tempPetName[255];
     char tempName[255];
-
     strcpy(tempName, name);
     strToUpper(tempName);
 
@@ -256,6 +284,7 @@ int verifyPetName(char name[], int personCode)
         if(petPersonCodes[i] != personCode)
             continue;
 
+        char tempPetName[255];
         strcpy(tempPetName, petNames[i]);
         strToUpper(tempPetName);
 

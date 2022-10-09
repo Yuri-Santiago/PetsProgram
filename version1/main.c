@@ -6,19 +6,18 @@
 
 // Person Data
 int personCodes[size];
-char personNames[size][255];
-char personCPFs[size][15];
-char personBirths[size][11];
+char *personNames[size];
+char *personCPFs[size];
+char *personBirths[size];
 
 // Pets Data
 int petCodes[petSize];
 int petPersonCodes[petSize];
-char petTypes[petSize][20];
-char petNames[petSize][255];
-char petBirths[petSize][11];
+char *petTypes[petSize]; // 20
+char *petNames[petSize]; // 255
+char *petBirths[petSize]; // 11
 
 int main() {
-    char c;
     init();
 
     insertPersonInfos(0, "Yuri", "077.183.053-09", "27/12/2002");
@@ -29,58 +28,21 @@ int main() {
 
     while(1) {
         showMenu();
-        printf("Digite a opcao desejada: ");
-
-        do {
-            c = (char) getc(stdin);
-        } while(c == '\n');
+        fflush(stdin);
+        char c = (char) getc(stdin);
 
         switch(c) {
             case '1':
-                insertPerson();
+                showPersonMenu();
                 break;
             case '2':
-                updatePerson();
-                break;
-            case '3':
-                deletePerson();
-                break;
-            case '4':
-                showPersonByCode();
-                break;
-            case '5':
-                showPersonsByPetType();
-                break;
-            case '6':
-                showAllPersons();
-                break;
-            case '7':
-                showAllPersonsInOrder();
-                break;
-            case '8':
-                insertPet();
-                break;
-            case '9':
-                updatePet();
-                break;
-            case 'a':
-                deletePet();
-                break;
-            case 'b':
-                showPetByCode();
-                break;
-            case 'c':
-                showPetByPersonCode();
-                break;
-            case 'd':
-                showAllPetsInOrder();
+                showPetsMenu();
                 break;
             case '0':
+                finish();
                 return 0;
             default:
                 printf("Opcao invalida...\n");
         }
     }
 }
-
-// TODO: update pets with same number

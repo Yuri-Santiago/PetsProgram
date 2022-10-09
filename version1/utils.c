@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
 
@@ -9,15 +10,43 @@
 void init()
 {
     for(int i = 0; i < size; ++i)
-        strcpy(personNames[i], "");
+        personNames[i] = NULL;
 
     for(int i = 0; i < petSize; ++i)
         petPersonCodes[i] = -1;
 }
 
+void finish()
+{
+    for(int i = 0; i < size; ++i) {
+        if(personNames[i]) {
+            free(personNames[i]);
+            free(personCPFs[i]);
+            free(personBirths[i]);
+        }
+    }
+
+    for(int i = 0; i < petSize; ++i) {
+        if(petPersonCodes[i] != -1) {
+            free(petTypes[i]);
+            free(petNames[i]);
+            free(petBirths[i]);
+        }
+    }
+}
+
 void showMenu()
 {
     printf("\nMenu de Funcionalidades\n");
+    printf("Digite 1 para ir para o Menu de Pessoas.\n");
+    printf("Digite 2 para ir para o Menu de Pets.\n");
+    printf("Digite 0 para sair.\n");
+    printf("Digite a opcao desejada: ");
+}
+
+void showPersonMenu()
+{
+    printf("\nMenu de Pessoas\n");
     printf("Digite 1 para inserir uma nova Pessoa.\n");
     printf("Digite 2 para atualizar uma Pessoa.\n");
     printf("Digite 3 para deletar uma Pessoa.\n");
@@ -25,15 +54,81 @@ void showMenu()
     printf("Digite 5 para mostrar uma Pessoa pelo Tipo de Pet.\n");
     printf("Digite 6 para mostrar todas as Pessoas.\n");
     printf("Digite 7 para mostrar todas as Pessoas em ordem alfabetica.\n");
-    printf("Digite 8 para inserir um novo Pet.\n");
-    printf("Digite 9 para atualizar um Pet.\n");
-    printf("Digite a para deletar um Pet.\n");
-    printf("Digite b para mostrar um Pet pelo codigo.\n");
-    printf("Digite c para mostrar um Pet pelo codigo do seu Dono.\n");
-    printf("Digite d para mostrar todos os Pets em ordem alfabetica.\n");
-    printf("Digite 0 sair.\n");
+    printf("Digite 0 voltar.\n");
+    printf("Digite a opcao desejada: ");
+
+    fflush(stdin);
+    char c = (char) getc(stdin);
+
+    switch (c) {
+        case '1':
+            insertPerson();
+            break;
+        case '2':
+            updatePerson();
+            break;
+        case '3':
+            deletePerson();
+            break;
+        case '4':
+            showPersonByCode();
+            break;
+        case '5':
+            showPersonsByPetType();
+            break;
+        case '6':
+            showAllPersons();
+            break;
+        case '7':
+            showAllPersonsInOrder();
+            break;
+        case '0':
+            break;
+        default:
+            printf("Opcao invalida...\n");
+    }
 }
 
+void showPetsMenu()
+{
+    printf("\nMenu de Pets\n");
+    printf("Digite 1 para inserir um novo Pet.\n");
+    printf("Digite 2 para atualizar um Pet.\n");
+    printf("Digite 3 para deletar um Pet.\n");
+    printf("Digite 4 para mostrar um Pet pelo codigo.\n");
+    printf("Digite 5 para mostrar um Pet pelo codigo do seu Dono.\n");
+    printf("Digite 6 para mostrar todos os Pets em ordem alfabetica.\n");
+    printf("Digite 0 voltar.\n");
+    printf("Digite a opcao desejada: ");
+
+    fflush(stdin);
+    char c = (char) getc(stdin);
+
+    switch (c) {
+        case '1':
+            insertPet();
+            break;
+        case '2':
+            updatePet();
+            break;
+        case '3':
+            deletePet();
+            break;
+        case '4':
+            showPetByCode();
+            break;
+        case '5':
+            showPetByPersonCode();
+            break;
+        case '6':
+            showAllPetsInOrder();
+            break;
+        case '0':
+            break;
+        default:
+            printf("Opcao invalida...\n");
+    }
+}
 void showPetTypeMenu()
 {
     printf("\nInforme o Tipo do Pet\n");
@@ -44,7 +139,7 @@ void showPetTypeMenu()
     printf("Digite a opcao desejada: ");
 }
 
-int verifyBirth(char birth[])
+int verifyBirth(char *birth)
 {
     if(strlen(birth) != 10) {
         printf("Tamanho de Data de Nascimento invalida, verifique o exemplo entre \"<>\".\n");
@@ -67,9 +162,19 @@ int verifyBirth(char birth[])
     return 1;
 }
 
-void strToUpper(char str[])
+void strToUpper(char *str)
 {
-    for(size_t i = 0; i < strlen(str); ++i)  {
+    for(size_t i = 0; i < strlen(str); ++i)
         str[i] = (char) toupper((int) str[i]);
-    }
+}
+
+void readString(char *str, int count)
+{
+    fflush(stdin);
+    fgets(str, count, stdin);
+}
+
+char *allocateString(char *str)
+{
+    return (char *) malloc((strlen(str) + 1) * sizeof(char));
 }

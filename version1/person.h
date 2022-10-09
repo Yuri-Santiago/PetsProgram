@@ -2,12 +2,15 @@
 #define PETSPROGRAM_PERSON_H
 
 #define size 30
+#define nameMax 255
+#define cpfMax 15
+#define birthMax 11
 
 // Person Data
 extern int personCodes[size];
-extern char personNames[size][255];
-extern char personCPFs[size][15];
-extern char personBirths[size][11];
+extern char *personNames[size];
+extern char *personCPFs[size];
+extern char *personBirths[size];
 
 // Person CRUD
 void insertPerson();
@@ -21,9 +24,10 @@ void showAllPersonsInOrder();
 // Person utils
 int searchEmptyPerson();
 int searchPersonByCode();
-void insertPersonInfos(int index, char name[], char cpf[], char birth[]);
-int verifyCPF(char cpf[]);
-void showPerson(int index);
-void showPersonPetType(char type[]);
+void insertPersonInfos(int, char *, char *, char *);
+void deletePersonInfos(int);
+int verifyCPF(char *);
+void showPerson(int);
+void showPersonPetType(char *);
 
 #endif //PETSPROGRAM_PERSON_H
