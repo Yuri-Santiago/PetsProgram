@@ -1,5 +1,5 @@
-#ifndef PETSPROGRAM_PETS_H
-#define PETSPROGRAM_PETS_H
+#ifndef PETS_H
+#define PETS_H
 
 #define petSize 150
 #define petTypeMax 20
@@ -30,4 +30,4 @@ char *choosePetType();
 int verifyPetName(char *, int);
 void showPet(int);
 
-#endif //PETSPROGRAM_PETS_H
+#endif //PETS_H

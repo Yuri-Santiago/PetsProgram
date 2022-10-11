@@ -32,11 +32,28 @@ void insertPerson()
         readString(birth, birthMax);
     } while(verifyBirth(birth));
 
-    insertPersonInfos(index, name, cpf, birth);
+    char *rg = (char *) malloc(rgMax * sizeof(char));
+    do {
+        printf("Insira o seu RG: <0000000000-0>: ");
+        readString(rg, rgMax);
+    } while(verifyRG(rg));
+
+    char *address = (char *) malloc(nameMax * sizeof(char));
+    printf("Insira o seu Endereco: ");
+    readString(address, nameMax);
+    address[strlen(address)-1] = '\0';
+
+    unsigned long income;
+    printf("Insira o seu Rendimento: ");
+    scanf("%lu", &income);
+
+    insertPersonInfos(index, name, cpf, birth, rg, address, income);
 
     free(name);
     free(cpf);
     free(birth);
+    free(rg);
+    free(address);
 
     printf("Pessoa inserida com sucesso!\n");
 }
@@ -66,11 +83,28 @@ void updatePerson()
         readString(birth, birthMax);
     } while(verifyBirth(birth));
 
-    insertPersonInfos(index, name, cpf, birth);
+    char *rg = (char *) malloc(rgMax * sizeof(char));
+    do {
+        printf("Insira o novo RG: <0000000000-0>: ");
+        readString(rg, rgMax);
+    } while(verifyRG(rg));
+
+    char *address = (char *) malloc(nameMax * sizeof(char));
+    printf("Insira o novo Endereco: ");
+    readString(address, nameMax);
+    address[strlen(address)-1] = '\0';
+
+    unsigned long income;
+    printf("Insira o novo Rendimento: ");
+    scanf("%lu", &income);
+
+    insertPersonInfos(index, name, cpf, birth, rg, address, income);
 
     free(name);
     free(cpf);
     free(birth);
+    free(rg);
+    free(address);
 
     printf("Pessoa atualizada com sucesso!\n");
 }
@@ -104,8 +138,8 @@ void showPersonsByPetType()
 {
     while(1) {
         showPetTypeMenu();
-        fflush(stdin);
         char c = (char) getc(stdin);
+        getchar();
 
         switch(c) {
             case '1':
@@ -190,20 +224,25 @@ int searchEmptyPerson()
 
 int searchPersonByCode()
 {
-    char code[4];
+    char *code;
     do {
         printf("\nInsira o codigo da pessoa <000>: ");
-        scanf("%s", code);
-    } while(strlen(code) != 3);
+        fgets(code, 4, stdin);
+    } while(!isdigit(code[0]) || !isdigit(code[1]) || !isdigit(code[2]));
+
+    getchar();
 
     long index = strtol(code, NULL, 10) - 1;
 
+    if(index >= size)
+        return -1;
+
     if(personNames[index])
-        return index;
+        return (int) index;
     return -1;
 }
 
-void insertPersonInfos(int index, char *name, char *cpf, char *birth)
+void insertPersonInfos(int index, char *name, char *cpf, char *birth, char *rg, char *address, unsigned long income)
 {
     personCodes[index] = index + 1;
 
@@ -215,6 +254,14 @@ void insertPersonInfos(int index, char *name, char *cpf, char *birth)
 
     personBirths[index] = allocateString(birth);
     strcpy(personBirths[index], birth);
+
+    personRGs[index] = allocateString(rg);
+    strcpy(personRGs[index], rg);
+
+    personAdresses[index] = allocateString(address);
+    strcpy(personAdresses[index], address);
+
+    personIncomes[index] = income;
 }
 
 void deletePersonInfos(int index)
@@ -223,6 +270,9 @@ void deletePersonInfos(int index)
     personNames[index] = NULL;
     personCPFs[index] = NULL;
     personBirths[index] = NULL;
+    personRGs[index] = NULL;
+    personAdresses[index] = NULL;
+    personIncomes[index] = 0;
 }
 
 int verifyCPF(char *cpf)
@@ -256,11 +306,44 @@ int verifyCPF(char *cpf)
     return 0;
 }
 
+int verifyRG(char *rg)
+{
+    if(strlen(rg) != 12) {
+        printf("Tamanho de RG invalido, verifique o exemplo entre \"<>\".\n");
+        return 1;
+    }
+
+    for(size_t i = 0; i < strlen(rg); ++i) {
+        if(i == 10)
+            continue;
+        if(!isdigit(rg[i])) {
+            printf("Padrao de RG invalido, verifique o exemplo entre \"<>\".\n");
+            return 1;
+        }
+    }
+
+    if(rg[10] != '-') {
+        printf("Padrao de RG invalido, verifique o exemplo entre \"<>\".\n");
+        return 1;
+    }
+
+    for(int i = 0; i < size; ++i) {
+        if(personRGs[i] && strcmp(personRGs[i], rg) == 0) {
+            printf("RG ja existente no banco de dados!\n");
+            return 1;
+        }
+    }
+
+    return 0;
+}
+
 void showPerson(int index)
 {
     printf("\nPessoa %d:\n", index+1);
-    printf("Codigo: %03d\nNome: %s\nCPF: %s\nData de Nascimento: %s\n",
-           personCodes[index], personNames[index], personCPFs[index], personBirths[index]);
+    printf("Codigo: %03d\nNome: %s\nCPF: %s\nData de Nascimento: %s\n"
+           "RG: %s\nEndereço: %s\nRendimento: %lu R$\n",
+           personCodes[index], personNames[index], personCPFs[index], personBirths[index],
+           personRGs[index], personAdresses[index], personIncomes[index]);
 }
 
 void showPersonPetType(char *type)

@@ -251,8 +251,8 @@ char *choosePetType()
 {
     while(1) {
         showPetTypeMenu();
-        fflush(stdin);
         char c = (char) getc(stdin);
+        getchar();
 
         char *type = (char *) malloc(petTypeMax * sizeof(char));
         switch(c) {

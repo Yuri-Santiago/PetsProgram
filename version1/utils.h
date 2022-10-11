@@ -1,5 +1,5 @@
-#ifndef PETSPROGRAM_UTILS_H
-#define PETSPROGRAM_UTILS_H
+#ifndef UTILS_H
+#define UTILS_H
 
 void init();
 void finish();
@@ -12,4 +12,4 @@ void strToUpper(char *);
 void readString(char *, int);
 char *allocateString(char *);
 
-#endif //PETSPROGRAM_UTILS_H
+#endif //UTILS_H

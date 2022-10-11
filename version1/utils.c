@@ -57,8 +57,8 @@ void showPersonMenu()
     printf("Digite 0 voltar.\n");
     printf("Digite a opcao desejada: ");
 
-    fflush(stdin);
     char c = (char) getc(stdin);
+    getchar();
 
     switch (c) {
         case '1':
@@ -101,8 +101,8 @@ void showPetsMenu()
     printf("Digite 0 voltar.\n");
     printf("Digite a opcao desejada: ");
 
-    fflush(stdin);
     char c = (char) getc(stdin);
+    getchar();
 
     switch (c) {
         case '1':
@@ -170,7 +170,6 @@ void strToUpper(char *str)
 
 void readString(char *str, int count)
 {
-    fflush(stdin);
     fgets(str, count, stdin);
 }
 
