@@ -16,23 +16,23 @@ unsigned long personIncomes[size];
 // Pets Data
 int petCodes[petSize];
 int petPersonCodes[petSize];
-char *petTypes[petSize]; // 20
-char *petNames[petSize]; // 255
-char *petBirths[petSize]; // 11
+char *petTypes[petSize];
+char *petNames[petSize];
+char *petBirths[petSize];
 
 int main() {
     init();
 
-    insertPersonInfos(0, "Yuri", "077.183.053-09", "27/12/2002", "123456789", "Rua 3", 1650);
-    insertPersonInfos(1, "Raquel", "000.000.000-00", "15/09/2022", "123456789", "Rua 3", 2500);
+    insertPersonInfos(0, "Yuri", "111.111.111-11", "27/12/2002", "1234567891-0", "Rua 3", 1650);
+    insertPersonInfos(1, "Alex", "222.222.222-22", "01/09/2022", "1098765432-1", "Rua 4", 2500);
     insertPetInfos(0, 1, "Gato", "Nina", "25/10/2021");
     insertPetInfos(1, 1, "Cachorro", "Tusk", "20/11/2017");
-    insertPetInfos(2, 1, "Passarinho", "Bot", "25/10/2021");
+    insertPetInfos(2, 1, "Passarinho", "Blue", "12/04/2022");
 
     while(1) {
         showMenu();
+        fflush(stdin);
         char c = (char) getc(stdin);
-        getchar();
 
         switch(c) {
             case '1':

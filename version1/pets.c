@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
 
 #include "pets.h"
 #include "person.h"
@@ -22,16 +23,23 @@ void insertPet()
 
     char *name = (char *) malloc(nameMax * sizeof(char));
     do {
-        printf("Insira o nome do pet: ");
+        printf("Insira o nome do pet<vazio para cancelar>: ");
         readString(name, nameMax);
+
+        if(strlen(name) == 1)
+            return;
+
         name[strlen(name)-1] = '\0';
     } while(verifyPetName(name, personIndex + 1));
 
-    char *type = choosePetType();
+    char *type;
+    do {
+        type = choosePetType();
+    } while(strcmp(type, "") == 0);
 
     char *birth = (char *) malloc(birthMax * sizeof(char));
     do {
-        printf("\nInsira a data de nascimento do pet<dd/mm/aaaa>: ");
+        printf("\nInsira a data de nascimento do pet <dd/mm/aaaa>: ");
         readString(birth, birthMax);
     } while(verifyBirth(birth));
 
@@ -52,23 +60,46 @@ void updatePet()
         return;
     }
 
+    printf("Ao atualizar, inserir vazio significa manter o valor existente.\n");
+
     char *name = (char *) malloc(nameMax * sizeof(char));
     do {
-        printf("Insira o nome do pet: "); // TODO: mesmo nome de pet na hora de atualizar não atualiza...
+        printf("Insira o nome do pet: ");
         readString(name, nameMax);
+
+        if(strlen(name) == 1) {
+            strcpy(name, petNames[index]);
+            break;
+        }
+
         name[strlen(name)-1] = '\0';
     } while(verifyPetName(name, personCode));
 
     char *type = choosePetType();
+    if(strcmp(type, "") == 0) {
+        free(type);
+        type = allocateString(petTypes[index]);
+        strcpy(type, petTypes[index]);
+    }
 
     char *birth = (char *) malloc(birthMax * sizeof(char));
     do {
-        printf("\nInsira a nova data de nascimento do pet<dd/mm/aaaa>: ");
+        printf("\nInsira a nova data de nascimento do pet <dd/mm/aaaa>: ");
         readString(birth, birthMax);
+
+        if(strlen(birth) == 1) {
+            strcpy(birth, petBirths[index]);
+            break;
+        }
     } while(verifyBirth(birth));
 
     updatePetInfos(index, petCode, personCode, type, name, birth);
-    printf("\nPet inserido com sucesso!\n");
+
+    free(name);
+    free(type);
+    free(birth);
+
+    printf("\nPet atualizado com sucesso!\n");
 }
 
 void deletePet()
@@ -80,7 +111,7 @@ void deletePet()
     }
 
     deletePetInfos(index);
-    printf("Pessoa deletada com sucesso!\n");
+    printf("Pet deletado com sucesso!\n");
 }
 
 void showPetByCode()
@@ -163,28 +194,34 @@ int searchEmptyPet()
 
 int searchPetByCode(int *index, int *petCode, int *personCode)
 {
-    char code[7];
+    char *code = (char *) malloc(nameMax * sizeof(char));
     do {
         printf("\nInsira o codigo do pet <000000>: ");
-        scanf("%s", code);
-    } while(strlen(code) != 6);
-
-    char person[4];
-    for(int i = 0; i < 3; i++)
-        person[i] = code[i];
-    person[3] = '\0';
+        fflush(stdin);
+        fgets(code, nameMax, stdin);
+    } while(strlen(code) != 7 || !isdigit(code[0]) || !isdigit(code[1]) || !isdigit(code[2])
+            || !isdigit(code[3]) || !isdigit(code[4]) || !isdigit(code[5]) || code[6] != '\n');
 
     char pet[4];
     strcpy(pet, &code[3]);
 
+    char person[4];
+    memset(person, '\0', sizeof(person));
+    strncpy(person, code, 3);
+
+    free(code);
+
     long petNumber = strtol(pet, NULL, 10);
     long personNumber = strtol(person, NULL, 10);
+
+    if(petNumber >= petSize || personNumber >= size)
+        return 0;
 
     for(int i = 0; i < petSize; ++i) {
         if(petPersonCodes[i] == personNumber && petCodes[i] == petNumber) {
             *index = i;
-            *personCode = personNumber;
-            *petCode = petNumber;
+            *personCode = (int) personNumber;
+            *petCode = (int) petNumber;
             return 1;
         }
     }
@@ -226,8 +263,11 @@ void deletePetInfos(int index)
 {
     petCodes[index] = -1;
     petPersonCodes[index] = -1;
+    free(petTypes[index]);
     petTypes[index] = NULL;
+    free(petNames[index]);
     petNames[index] = NULL;
+    free(petBirths[index]);
     petBirths[index] = NULL;
 }
 
@@ -249,46 +289,46 @@ int getPetCode(int personCode)
 
 char *choosePetType()
 {
-    while(1) {
-        showPetTypeMenu();
-        char c = (char) getc(stdin);
-        getchar();
+    showPetTypeMenu();
+    fflush(stdin);
+    char c = (char) getc(stdin);
 
-        char *type = (char *) malloc(petTypeMax * sizeof(char));
-        switch(c) {
-            case '1':
-                strcpy(type, "Cachorro");
-                return type;
-            case '2':
-                strcpy(type, "Gato");
-                return type;
-            case '3':
-                strcpy(type, "Cobra");
-                return type;
-            case '4':
-                strcpy(type, "Passarinho");
-                return type;
-            default:
-                printf("Opcao invalida...\n");
-        }
+    char *type = (char *) malloc(petTypeMax * sizeof(char));
+    switch(c) {
+        case '1':
+            strcpy(type, "Cachorro");
+            break;
+        case '2':
+            strcpy(type, "Gato");
+            break;
+        case '3':
+            strcpy(type, "Cobra");
+            break;
+        case '4':
+            strcpy(type, "Passarinho");
+            break;
+        default:
+            strcpy(type, "");
     }
+
+    return type;
 }
 
 int verifyPetName(char *name, int personCode)
 {
-    char tempName[255];
-    strcpy(tempName, name);
-    strToUpper(tempName);
+    char insertedName[nameMax];
+    strcpy(insertedName, name);
+    strToUpper(insertedName);
 
     for(int i = 0; i < petSize; ++i) {
         if(petPersonCodes[i] != personCode)
             continue;
 
-        char tempPetName[255];
-        strcpy(tempPetName, petNames[i]);
-        strToUpper(tempPetName);
+        char petName[nameMax];
+        strcpy(petName, petNames[i]);
+        strToUpper(petName);
 
-        if(strcmp(tempPetName, tempName) == 0) {
+        if(strcmp(petName, insertedName) == 0) {
             printf("Nome de pet repetido! Insira um outro nome.\n");
             return 1;
         }
@@ -301,5 +341,5 @@ void showPet(int index)
 {
     printf("\nPet %d de %s:\n", petCodes[index], personNames[petPersonCodes[index]-1]);
     printf("Codigo: %03d%03d\nTipo: %s\nNome: %s\nData de Nascimento: %s\n",
-           petPersonCodes[index], petCodes[index], petTypes[index], petNames[index], petBirths[index]);
+            petPersonCodes[index], petCodes[index], petTypes[index], petNames[index], petBirths[index]);
 }

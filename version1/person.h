@@ -28,11 +28,12 @@ void showAllPersonsInOrder();
 // Person utils
 int searchEmptyPerson();
 int searchPersonByCode();
-void insertPersonInfos(int, char *, char *, char *, char *, char *, unsigned long);
-void deletePersonInfos(int);
-int verifyCPF(char *);
-int verifyRG(char *);
-void showPerson(int);
-void showPersonPetType(char *);
+void insertPersonInfos(int index, char *name, char *cpf, char *birth, char *rg, char *address, unsigned long income);
+void deletePersonInfos(int index);
+int verifyCPF(char *cpf);
+int verifyRG(char *rg);
+void showPerson(int index);
+void showPersonPetType(char *type);
+int isIntInList(int i, const int list[]);
 
 #endif //PERSON_H

@@ -21,13 +21,13 @@ void showAllPetsInOrder();
 
 // Pet utils
 int searchEmptyPet();
-int searchPetByCode(int *, int *, int *);
-void insertPetInfos(int, int, char *, char *, char *);
-void updatePetInfos(int, int, int, char *, char *, char *);
-void deletePetInfos(int);
-int getPetCode(int);
+int searchPetByCode(int *index, int *petCode, int *personCode);
+void insertPetInfos(int index, int personCode, char *type, char *name, char *birth);
+void updatePetInfos(int index, int petCode, int personCode, char *type, char *name, char *birth);
+void deletePetInfos(int index);
+int getPetCode(int personCode);
 char *choosePetType();
-int verifyPetName(char *, int);
-void showPet(int);
+int verifyPetName(char *name, int personCode);
+void showPet(int index);
 
 #endif //PETS_H

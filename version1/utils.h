@@ -7,9 +7,9 @@ void showMenu();
 void showPersonMenu();
 void showPetsMenu();
 void showPetTypeMenu();
-int verifyBirth(char *);
-void strToUpper(char *);
-void readString(char *, int);
-char *allocateString(char *);
+int verifyBirth(char *birth);
+void strToUpper(char *str);
+void readString(char *str, int count);
+char *allocateString(char *str);
 
 #endif //UTILS_H
