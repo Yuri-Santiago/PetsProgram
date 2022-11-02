@@ -28,6 +28,7 @@ int main() {
     insertPetInfos(0, 1, "Gato", "Nina", "25/10/2021");
     insertPetInfos(1, 1, "Cachorro", "Tusk", "20/11/2017");
     insertPetInfos(2, 1, "Passarinho", "Blue", "12/04/2022");
+    insertPetInfos(3, 1, "Gato", "Pequeno", "15/03/2020");
 
     while(1) {
         showMenu();

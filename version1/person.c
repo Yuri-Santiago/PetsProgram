@@ -324,6 +324,11 @@ void deletePersonInfos(int index)
     free(personAdresses[index]);
     personAdresses[index] = NULL;
     personIncomes[index] = 0;
+
+    for(int i = 0; i < petSize; ++i) {
+        if(petPersonCodes[i] != -1 && petPersonCodes[i] == index+1)
+            deletePetInfos(i);
+    }
 }
 
 int verifyCPF(char *cpf)
