@@ -137,7 +137,6 @@ void updatePerson()
 
         if(strlen(incomeChar) == 1) {
             income = personIncomes[index];
-            strcpy(incomeChar, personRGs[index]);
             break;
         }
 
