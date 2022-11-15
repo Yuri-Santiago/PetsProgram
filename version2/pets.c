@@ -285,3 +285,68 @@ struct pet *searchPetByCode(uint64_t code)
     }
     return NULL;
 }
+
+void addPetFromFile(struct pet *pt, struct pet **last)
+{
+    if(!(*last)) { // Primeiro elemento da lista
+        pt->next = NULL;
+        petStart = pt;
+    } else { // Elementos logo apos o primeiro
+        (*last)->next = pt;
+        pt->next = NULL;
+    }
+}
+
+void savePet()
+{
+    FILE *file = fopen("pet.bin", "wb");
+    if(!file) {
+        printf("\nHouve um erro ao salvar os dados!");
+        exit(2);
+    }
+
+    printf("\nSalvando os dados dos Pets.");
+    struct pet *pt = petStart;
+    while(pt) {
+        fwrite(pt, sizeof(struct pet), 1, file);
+        pt = pt->next;
+    }
+
+    printf("\nDados Salvos.\n");
+    fclose(file);
+}
+
+void loadPet()
+{
+    FILE *file = fopen("pet.bin", "rb");
+    if(!file) {
+        printf("\nHouve um erro ao carregar os dados!");
+        exit(2);
+    }
+
+    // Libera a memoria alocada
+    struct pet *pt = petStart;
+    while(petStart) {
+        petStart = petStart->next;
+        free(pt);
+        pt = petStart;
+    }
+
+    printf("\nCarregando os dados dos Pets.");
+    struct pet *last = NULL;
+    while(!feof(file)) {
+        pt = (struct pet*) malloc(sizeof(struct pet));
+        if(!pt) {
+            printf("\nSem memoria!");
+            return;
+        }
+
+        if(1 != fread(pt, sizeof(struct pet), 1, file))
+            break;
+        addPetFromFile(pt, &last);
+        last = pt;
+    }
+
+    printf("\nDados Carregados.\n");
+    fclose(file);
+}

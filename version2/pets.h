@@ -43,4 +43,8 @@ enum bool personHasPetType(uint64_t personCode, enum petTypes type);
 enum bool verifyPetName(char *name, uint64_t personCode, enum bool isUpdate);
 
 struct pet *searchPetByCode(uint64_t code);
+
+void addPetFromFile(struct pet *pt, struct pet **last);
+void savePet();
+void loadPet();
 #endif //PETS_H

@@ -9,6 +9,8 @@ void init()
 {
     start = NULL;
     petStart = NULL;
+    createPersonFile();
+    createPetFile();
     createKeysFile();
     // loadData 
 }
@@ -23,6 +25,8 @@ void showMenu()
     printf("\n\nMenu de Funcionalidades");
     printf("\nDigite 1 para ir para o Menu de Pessoas.");
     printf("\nDigite 2 para ir para o Menu de Pets.");
+    printf("\nDigite 3 para Salvar os Dados");
+    printf("\nDigite 4 para Carregar os Dados");
     printf("\nDigite 0 para sair.");
     printf("\nDigite a opcao desejada: ");
 }
@@ -297,6 +301,50 @@ enum bool notVerify(const char *str)
 {
     (void) str;
     return false;
+}
+
+void saveData()
+{
+    savePerson();
+    savePet();
+}
+
+void loadData()
+{
+    loadPerson();
+    loadPet();
+}
+
+void createPersonFile()
+{
+    FILE *file = fopen("person.bin", "rb");
+    if(file != NULL) {
+        fclose(file);
+        return;
+    }
+
+    file = fopen("person.bin", "wb");
+    if(file == NULL) {
+        printf("\nHouve um erro ao criar o arquivo!");
+        exit(2);
+    }
+    fclose(file);
+}
+
+void createPetFile()
+{
+    FILE *file = fopen("pet.bin", "rb");
+    if(file != NULL) {
+        fclose(file);
+        return;
+    }
+
+    file = fopen("pet.bin", "wb");
+    if(file == NULL) {
+        printf("\nHouve um erro ao criar o arquivo!");
+        exit(2);
+    }
+    fclose(file);
 }
 
 void createKeysFile()

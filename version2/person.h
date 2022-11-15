@@ -36,4 +36,8 @@ void showAllPersons();
 void showPerson(struct person *p, int num);
 
 struct person *searchPersonByCode(uint64_t code);
+
+void addFromFile(struct person *p, struct person **last);
+void savePerson();
+void loadPerson();
 #endif //PERSON_H

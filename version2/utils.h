@@ -54,6 +54,11 @@ enum bool verifyIncome(const char *income);
 enum bool verifyIsEmpty(const char *str);
 enum bool notVerify(const char *str);
 
+void saveData();
+void loadData();
+
+void createPersonFile();
+void createPetFile();
 void createKeysFile();
 void readKeys(uint64_t *keys);
 void updateKeys(uint64_t *keys);
@@ -62,5 +67,4 @@ uint64_t inputCode(char *str);
 uint64_t getPersonCode();
 uint64_t getPetCode();
 uint64_t getCode(enum codeIndex c);
-
 #endif //UTILS_H

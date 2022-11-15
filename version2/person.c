@@ -209,3 +209,68 @@ struct person *searchPersonByCode(uint64_t code)
     }
     return NULL;
 }
+
+void addPersonFromFile(struct person *p, struct person **last)
+{
+    if(!(*last)) { // Primeiro elemento da lista
+        p->next = NULL;
+        start = p;
+    } else { // Elementos logo apos o primeiro
+        (*last)->next = p;
+        p->next = NULL;
+    }
+}
+
+void savePerson()
+{
+    FILE *file = fopen("person.bin", "wb");
+    if(!file) {
+        printf("\nHouve um erro ao salvar os dados!");
+        exit(2);
+    }
+
+    printf("\nSalvando os dados das Pessoas.");
+    struct person *p = start;
+    while(p) {
+        fwrite(p, sizeof(struct person), 1, file);
+        p = p->next;
+    }
+
+    printf("\nDados Salvos.\n");
+    fclose(file);
+}
+
+void loadPerson()
+{
+    FILE *file = fopen("person.bin", "rb");
+    if(!file) {
+        printf("\nHouve um erro ao carregar os dados!");
+        exit(2);
+    }
+
+    // Libera a memoria alocada
+    struct person *p = start;
+    while(start) {
+        start = start->next;
+        free(p);
+        p = start;
+    }
+
+    printf("\nCarregando os dados das Pessoas.");
+    struct person *last = NULL;
+    while(!feof(file)) {
+        p = (struct person*) malloc(sizeof(struct person));
+        if(!p) {
+            printf("\nSem memoria!");
+            return;
+        }
+
+        if(1 != fread(p, sizeof(struct person), 1, file))
+            break;
+        addPersonFromFile(p, &last);
+        last = p;
+    }
+
+    printf("\nDados Carregados.\n");
+    fclose(file);
+}

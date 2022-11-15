@@ -54,3 +54,4 @@ dkms.conf
 version1/main
 cmake-build-debug/
 .idea/
+.vscode/
