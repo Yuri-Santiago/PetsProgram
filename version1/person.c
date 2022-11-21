@@ -11,7 +11,7 @@ void insertPerson()
 {
     int index = searchEmptyPerson();
     if(index == -1) {
-        printf("\nNao ha espaços para inserir uma pessoa!");
+        printf("\nNao ha espaços para inserir uma pessoa!\n");
         return;
     }
 
@@ -65,14 +65,14 @@ void insertPerson()
     free(address);
     free(incomeChar);
 
-    printf("\nPessoa inserida com sucesso!");
+    printf("\nPessoa inserida com sucesso!\n");
 }
 
 void updatePerson()
 {
     int index = searchPersonByCode();
     if(index == -1) {
-        printf("\nPessoa nao encontrada!");
+        printf("\nPessoa nao encontrada!\n");
         return;
     }
 
@@ -152,7 +152,7 @@ void updatePerson()
     free(address);
     free(incomeChar);
 
-    printf("\nPessoa atualizada com sucesso!");
+    printf("\nPessoa atualizada com sucesso!\n");
 }
 
 void deletePerson()
@@ -160,12 +160,12 @@ void deletePerson()
     int index = searchPersonByCode();
 
     if(index == -1) {
-        printf("\nPessoa nao encontrada!");
+        printf("\nPessoa nao encontrada!\n");
         return;
     }
 
     deletePersonInfos(index);
-    printf("\nPessoa deletada com sucesso!");
+    printf("\nPessoa deletada com sucesso!\n");
 }
 
 void showPersonByCode()
@@ -173,7 +173,7 @@ void showPersonByCode()
     int index = searchPersonByCode();
 
     if(index == -1) {
-        printf("\nPessoa nao encontrada!");
+        printf("\nPessoa nao encontrada!\n");
         return;
     }
 
