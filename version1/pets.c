@@ -11,19 +11,19 @@ void insertPet()
 {
     int index = searchEmptyPet();
     if(index == -1) {
-        printf("\nNao ha espaços para inserir uma novo pet!\n");
+        printf("\nNao ha espaços para inserir uma novo pet!");
         return;
     }
 
     int personIndex = searchPersonByCode();
     if(personIndex == -1) {
-        printf("\nPessoa nao encontrada!\n");
+        printf("\nPessoa nao encontrada!");
         return;
     }
 
     char *name = (char *) malloc(nameMax * sizeof(char));
     do {
-        printf("Insira o nome do pet<vazio para cancelar>: ");
+        printf("\nInsira o nome do pet<vazio para cancelar>: ");
         readString(name, nameMax);
 
         if(strlen(name) == 1)
@@ -49,22 +49,22 @@ void insertPet()
     free(type);
     free(birth);
 
-    printf("\nPet inserido com sucesso!\n");
+    printf("\nPet inserido com sucesso!");
 }
 
 void updatePet()
 {
     int index, petCode, personCode;
     if(!searchPetByCode(&index, &petCode, &personCode)) {
-        printf("Pet nao encontrado!");
+        printf("\nPet nao encontrado!");
         return;
     }
 
-    printf("Ao atualizar, inserir vazio significa manter o valor existente.\n");
+    printf("\nAo atualizar, inserir vazio significa manter o valor existente.");
 
     char *name = (char *) malloc(nameMax * sizeof(char));
     do {
-        printf("Insira o nome do pet: ");
+        printf("\nInsira o nome do pet: ");
         readString(name, nameMax);
 
         if(strlen(name) == 1) {
@@ -99,26 +99,26 @@ void updatePet()
     free(type);
     free(birth);
 
-    printf("\nPet atualizado com sucesso!\n");
+    printf("\nPet atualizado com sucesso!");
 }
 
 void deletePet()
 {
     int index, petCode, personCode;
     if(!searchPetByCode(&index, &petCode, &personCode)) {
-        printf("Pet nao encontrado!");
+        printf("\nPet nao encontrado!");
         return;
     }
 
     deletePetInfos(index);
-    printf("Pet deletado com sucesso!\n");
+    printf("\nPet deletado com sucesso!");
 }
 
 void showPetByCode()
 {
     int index, petCode, personCode;
     if(!searchPetByCode(&index, &petCode, &personCode)) {
-        printf("Pet nao encontrado!");
+        printf("\nPet nao encontrado!");
         return;
     }
 
@@ -129,7 +129,7 @@ void showPetByPersonCode()
 {
     int index = searchPersonByCode();
     if(index == -1) {
-        printf("Pessoa nao encontrada!\n");
+        printf("\nPessoa nao encontrada!");
         return;
     }
 
@@ -329,7 +329,7 @@ int verifyPetName(char *name, int personCode)
         strToUpper(petName);
 
         if(strcmp(petName, insertedName) == 0) {
-            printf("Nome de pet repetido! Insira um outro nome.\n");
+            printf("\nNome de pet repetido! Insira um outro nome.");
             return 1;
         }
     }

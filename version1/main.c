@@ -46,7 +46,7 @@ int main() {
                 finish();
                 return 0;
             default:
-                printf("Opcao invalida...\n");
+                printf("\nOpcao invalida...");
         }
     }
 }
