@@ -17,7 +17,7 @@ enum bool checkUnloaded()
     do {
         printf("\nOs dados nao foram carregados para o programa, deseja continuar sem carregar?\n<S ou N>: ");
         fflush(stdin);
-        c = toupper(getc(stdin));
+        c = (char) toupper(getc(stdin));
     } while(c != 'S' && c != 'N');
 
     if(c == 'S') {
@@ -54,7 +54,7 @@ void finish()
     do {
         printf("\nExistem dados nao salvos no programa, deseja sair sem salvar?\n<S ou N>: ");
         fflush(stdin);
-        c = toupper(getc(stdin));
+        c = (char) toupper(getc(stdin));
     } while(c != 'S' && c != 'N');
 
     if(c == 'S')
