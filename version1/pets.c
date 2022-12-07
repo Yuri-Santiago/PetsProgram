@@ -11,13 +11,13 @@ void insertPet()
 {
     int index = searchEmptyPet();
     if(index == -1) {
-        printf("\nNao ha espaços para inserir uma novo pet!");
+        printf("\nNao ha espaços para inserir uma novo pet!\n");
         return;
     }
 
     int personIndex = searchPersonByCode();
     if(personIndex == -1) {
-        printf("\nPessoa nao encontrada!");
+        printf("\nPessoa nao encontrada!\n");
         return;
     }
 
@@ -49,14 +49,14 @@ void insertPet()
     free(type);
     free(birth);
 
-    printf("\nPet inserido com sucesso!");
+    printf("\nPet inserido com sucesso!\n");
 }
 
 void updatePet()
 {
     int index, petCode, personCode;
     if(!searchPetByCode(&index, &petCode, &personCode)) {
-        printf("\nPet nao encontrado!");
+        printf("\nPet nao encontrado!\n");
         return;
     }
 
@@ -99,26 +99,26 @@ void updatePet()
     free(type);
     free(birth);
 
-    printf("\nPet atualizado com sucesso!");
+    printf("\nPet atualizado com sucesso!\n");
 }
 
 void deletePet()
 {
     int index, petCode, personCode;
     if(!searchPetByCode(&index, &petCode, &personCode)) {
-        printf("\nPet nao encontrado!");
+        printf("\nPet nao encontrado!\n");
         return;
     }
 
     deletePetInfos(index);
-    printf("\nPet deletado com sucesso!");
+    printf("\nPet deletado com sucesso!\n");
 }
 
 void showPetByCode()
 {
     int index, petCode, personCode;
     if(!searchPetByCode(&index, &petCode, &personCode)) {
-        printf("\nPet nao encontrado!");
+        printf("\nPet nao encontrado!\n");
         return;
     }
 
@@ -129,7 +129,7 @@ void showPetByPersonCode()
 {
     int index = searchPersonByCode();
     if(index == -1) {
-        printf("\nPessoa nao encontrada!");
+        printf("\nPessoa nao encontrada!\n");
         return;
     }
 
