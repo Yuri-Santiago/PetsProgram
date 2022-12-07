@@ -5,6 +5,7 @@
 #include "utils.h"
 
 extern struct pet *petStart;
+
 struct person;
 enum bool;
 

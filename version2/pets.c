@@ -288,13 +288,12 @@ struct pet *searchPetByCode(uint64_t code)
 
 void addPetFromFile(struct pet *pt, struct pet **last)
 {
-    if(!(*last)) { // Primeiro elemento da lista
-        pt->next = NULL;
+    if(!(*last)) // Primeiro elemento da lista
         petStart = pt;
-    } else { // Elementos logo apos o primeiro
+    else // Elementos logo apos o primeiro
         (*last)->next = pt;
-        pt->next = NULL;
-    }
+
+    pt->next = NULL;
 }
 
 void savePet()

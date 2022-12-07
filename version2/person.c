@@ -212,13 +212,12 @@ struct person *searchPersonByCode(uint64_t code)
 
 void addPersonFromFile(struct person *p, struct person **last)
 {
-    if(!(*last)) { // Primeiro elemento da lista
-        p->next = NULL;
+    if(!(*last)) // Primeiro elemento da lista
         start = p;
-    } else { // Elementos logo apos o primeiro
+    else // Elementos logo apos o primeiro
         (*last)->next = p;
-        p->next = NULL;
-    }
+
+    p->next = NULL;
 }
 
 void savePerson()

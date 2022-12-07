@@ -9,9 +9,11 @@ void init()
 {
     start = NULL;
     petStart = NULL;
+
     createPersonFile();
     createPetFile();
     createKeysFile();
+
     // loadData 
 }
 
@@ -361,7 +363,7 @@ void createKeysFile()
         exit(2);
     }
 
-    uint64_t keys[2] = {4, 2};
+    uint64_t keys[2] = {3, 4};
     fwrite(keys, sizeof(uint64_t), 2, file);
     fclose(file);
 }
