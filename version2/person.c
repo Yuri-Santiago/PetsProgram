@@ -1,5 +1,7 @@
 #include "person.h"
 
+struct person *start;
+
 void insertPerson()
 {
     struct person *p = (struct person*) malloc(sizeof(struct person));
@@ -28,6 +30,8 @@ void insertPerson()
 
     addPersonToList(p);
     printf("\nPessoa inserida com sucesso!\n");
+
+    setUnsavedData();
 }
 
 void addPersonToList(struct person *p)
@@ -93,6 +97,8 @@ void updatePerson()
         addPersonToList(p);
     }
     printf("\nPessoa atualizada com sucesso!");
+
+    setUnsavedData();
 }
 
 void deletePerson()
@@ -109,6 +115,8 @@ void deletePerson()
 
     free(p);
     printf("\nPessoa deletada com sucesso!");
+
+    setUnsavedData();
 }
 
 void removePersonFromList(struct person *p)

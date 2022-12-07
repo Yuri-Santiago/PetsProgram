@@ -5,21 +5,60 @@
 
 #include "utils.h"
 
+enum bool unloadedData;
+enum bool unsavedData;
+
+enum bool checkUnloaded()
+{
+    if(!unloadedData)
+        return false;
+
+    char c;
+    do {
+        printf("\nOs dados nao foram carregados para o programa, deseja continuar sem carregar?\n<S ou N>: ");
+        fflush(stdin);
+        c = toupper(getc(stdin));
+    } while(c != 'S' && c != 'N');
+
+    if(c == 'S') {
+        unloadedData = false;
+        return false;
+    } else {
+        return true;
+    }
+}
+
+void setUnsavedData()
+{
+    unsavedData = true;
+}
+
 void init()
 {
     start = NULL;
     petStart = NULL;
+    unloadedData = true;
+    unsavedData = false;
 
     createPersonFile();
     createPetFile();
     createKeysFile();
-
-    // loadData 
 }
 
 void finish()
 {
-    // Save data? Check if has changes not updated
+    if(!unsavedData)
+        exit(0);
+
+    char c;
+    do {
+        printf("\nExistem dados nao salvos no programa, deseja sair sem salvar?\n<S ou N>: ");
+        fflush(stdin);
+        c = toupper(getc(stdin));
+    } while(c != 'S' && c != 'N');
+
+    if(c == 'S')
+        exit(0);
 }
 
 void showMenu()
@@ -309,12 +348,16 @@ void saveData()
 {
     savePerson();
     savePet();
+
+    unsavedData = false;
 }
 
 void loadData()
 {
     loadPerson();
     loadPet();
+
+    unloadedData = false;
 }
 
 void createPersonFile()

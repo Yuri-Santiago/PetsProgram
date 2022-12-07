@@ -9,8 +9,6 @@
 #include "pets.h"
 #include "utils.h"
 
-extern struct person *start;
-
 struct person {
     uint64_t code;
     char name[stringMax];

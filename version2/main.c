@@ -6,9 +6,6 @@ enum options {
     FinishProgram, PersonMenu, PetsMenu, SaveData, LoadData
 };
 
-struct person *start;
-struct pet *petStart;
-
 void insertPersonInfos(uint64_t code, char *name, char *cpf, char *birth, char *rg, char *address, uint64_t income)
 {
     struct person *p = (struct person*) malloc(sizeof(struct person));
@@ -49,9 +46,13 @@ int main() {
 
         switch(opt) {
             case PersonMenu:
+                if(checkUnloaded())
+                    break;
                 showPersonMenu();
                 break;
             case PetsMenu:
+                if(checkUnloaded())
+                    break;
                 showPetsMenu();
                 break;
             case SaveData:
@@ -62,7 +63,7 @@ int main() {
                 break;
             case FinishProgram:
                 finish();
-                return 0;
+                break; //return 0;
             default:
                 printf("\nOpcao invalida...");
         }

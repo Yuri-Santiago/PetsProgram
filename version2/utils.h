@@ -13,6 +13,9 @@
 extern struct person *start;
 extern struct pet *petStart;
 
+extern enum bool unsavedData;
+extern enum bool unloadedData;
+
 enum bool {
     false, true
 };
@@ -32,6 +35,9 @@ enum optionsPerson {
 enum optionsPets {
     FinishPets, InsertPet, UpdatePets, DeletePet, ShowPetCode, ShowPetPersonCode, ShowAllPets
 };
+
+enum bool checkUnloaded();
+void setUnsavedData();
 
 void init();
 void finish();

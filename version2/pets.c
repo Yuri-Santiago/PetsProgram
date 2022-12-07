@@ -1,5 +1,7 @@
 #include "pets.h"
 
+struct pet *petStart;
+
 void insertPet()
 {
     struct pet *pt = (struct pet*) malloc(sizeof(struct pet));
@@ -31,6 +33,8 @@ void insertPet()
 
     addPetToList(pt);
     printf("\nPet inserido com sucesso!");
+
+    setUnsavedData();
 }
 
 void addPetToList(struct pet *pt)
@@ -101,6 +105,8 @@ void updatePet()
         addPetToList(pt);
     }
     printf("\nPet atualizado com sucesso!");
+
+    setUnsavedData();
 }
 
 void deletePet()
@@ -112,6 +118,8 @@ void deletePet()
         return;
     }
     deletePetInfo(pt);
+
+    setUnsavedData();
 }
 
 void deletePetsByPerson(struct person *p)
